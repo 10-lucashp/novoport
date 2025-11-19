@@ -1,11 +1,3 @@
-/**
-* Template Name: MyResume
-* Template URL: https://bootstrapmade.com/free-html-bootstrap-template-my-resume/
-* Updated: Jun 29 2024 with Bootstrap v5.3.3
-* Author: BootstrapMade.com
-* License: https://bootstrapmade.com/license/
-*/
-
 (function() {
   "use strict";
 
@@ -30,7 +22,6 @@
         headerToggle();
       }
     });
-
   });
 
   /**
@@ -152,19 +143,89 @@
       });
     });
 
-    isotopeItem.querySelectorAll('.isotope-filters li').forEach(function(filters) {
-      filters.addEventListener('click', function() {
-        isotopeItem.querySelector('.isotope-filters .filter-active').classList.remove('filter-active');
-        this.classList.add('filter-active');
-        initIsotope.arrange({
-          filter: this.getAttribute('data-filter')
-        });
-        if (typeof aosInit === 'function') {
-          aosInit();
-        }
-      }, false);
-    });
+    // =====================================================
+    // BANCO DE IMAGENS (VOCÊ PODE EDITAR DEPOIS)
+    // =====================================================
 
+    const imageBank = {
+      app: [
+        'assets/img/portfolio/app-1.jpg',
+        'assets/img/portfolio/app-2.jpg',
+        'assets/img/portfolio/app-3.jpg'
+      ],
+      product: [
+        'assets/img/portfolio/product-1.jpg',
+        'assets/img/portfolio/product-2.jpg',
+        'assets/img/portfolio/product-3.jpg'
+      ],
+      branding: [
+        'assets/img/portfolio/branding-1.jpg',
+        'assets/img/portfolio/branding-2.jpg',
+        'assets/img/portfolio/branding-3.jpg'
+      ],
+      books: [
+        'assets/img/portfolio/books-1.jpg',
+        'assets/img/portfolio/books-2.jpg',
+        'assets/img/portfolio/books-3.jpg'
+      ]
+    };
+
+    const allImages = [].concat(...Object.values(imageBank));
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    // =====================================================
+    // AQUI É A MODIFICAÇÃO QUE VOCÊ PEDIU
+    // =====================================================
+
+    isotopeItem.querySelectorAll('.isotope-filters li').forEach(function(filterButton) {
+
+      filterButton.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        // REMOVE VERDE DOS OUTROS
+        isotopeItem.querySelectorAll('.isotope-filters li')
+          .forEach(btn => btn.classList.remove('filter-active-green'));
+
+        // DEIXA O CLICADO VERDE
+        this.classList.add('filter-active-green');
+
+        const currentFilter = this.getAttribute('data-filter');
+
+        initIsotope.arrange({
+          filter: currentFilter
+        });
+
+        setTimeout(() => {
+          const visibleItems = isotopeItem.querySelectorAll('.isotope-item:not(.isotope-hidden)');
+
+          let imagesToUse;
+          if (currentFilter === '*') {
+            imagesToUse = shuffle([...allImages]);
+          } else {
+            const category = currentFilter.replace('.filter-', '');
+            imagesToUse = shuffle([...imageBank[category]]);
+          }
+
+          visibleItems.forEach((item, index) => {
+            const img = item.querySelector('img');
+            const link = item.querySelector('.glightbox');
+            const newImage = imagesToUse[index % imagesToUse.length];
+
+            if (img) img.src = newImage;
+            if (link) link.href = newImage;
+          });
+
+          glightbox.reload();
+        }, 250);
+      });
+    });
   });
 
   /**
