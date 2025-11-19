@@ -1,3 +1,3 @@
 # novoport
 antigo: https://builder.bootstrapmade.com/demo/MyResume/
-meu: https://10-lucashp.github.io/novoport/index.html
+meu: https://github.com/10-lucashp/novoport/blob/main/index.html
